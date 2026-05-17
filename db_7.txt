@@ -1,0 +1,194 @@
+CREATE TABLE CUSTOMERS(                             -- Create CUSTOMERS table
+CNo INT PRIMARY KEY,                                -- Customer number as primary key
+Cname VARCHAR(50),                                  -- Store customer name
+Ccity VARCHAR(50),                                  -- Store customer city
+CMobile VARCHAR(15)                                 -- Store customer mobile number
+);
+
+CREATE TABLE ITEMS(                                 -- Create ITEMS table
+INo INT PRIMARY KEY,                                -- Item number as primary key
+Iname VARCHAR(50),                                  -- Store item name
+Itype VARCHAR(50),                                  -- Store item type
+Iprice DECIMAL(10,2),                               -- Store item price
+Icount INT                                          -- Store item count
+);
+
+CREATE TABLE PURCHASE(                              -- Create PURCHASE table
+PNo INT PRIMARY KEY,                                -- Purchase number as primary key
+Pdate DATE,                                         -- Store purchase date
+Pquantity INT,                                      -- Store purchase quantity
+CNo INT,                                            -- Store customer number
+INo INT,                                            -- Store item number
+FOREIGN KEY(CNo) REFERENCES CUSTOMERS(CNo),         -- Foreign key for customer
+FOREIGN KEY(INo) REFERENCES ITEMS(INo)              -- Foreign key for item
+);
+
+
+INSERT INTO CUSTOMERS VALUES                        -- Insert records into CUSTOMERS table
+(1,'Maya','Pune','9876543210'),
+(2,'Gopal','Mumbai','9123456780'),
+(3,'Amit','Pune','9988776655');
+
+INSERT INTO ITEMS VALUES                            -- Insert records into ITEMS table
+(101,'Notebook','Stationary',500,20),
+(102,'Pen','Stationary',100,50),
+(103,'Printer','Electronics',5000,5),
+(104,'Bag','Stationary',800,15);
+
+INSERT INTO PURCHASE VALUES                         -- Insert records into PURCHASE table
+(1,'2026-01-10',2,1,101),
+(2,'2026-01-12',1,2,103),
+(3,'2026-01-15',3,1,104),
+(4,'2026-01-20',5,3,102);
+
+
+SELECT *                                            -- Display stationary items within price range
+FROM ITEMS
+WHERE Itype='Stationary'
+AND Iprice BETWEEN 400 AND 1000;
+
+
+UPDATE CUSTOMERS                                    -- Update mobile number
+SET CMobile='9999999999'
+WHERE Cname='Gopal';
+
+
+SELECT *                                            -- Display item with maximum price
+FROM ITEMS
+WHERE Iprice=
+(
+SELECT MAX(Iprice)
+FROM ITEMS
+);
+
+
+SELECT *                                            -- Display purchases from recent to oldest
+FROM PURCHASE
+ORDER BY Pdate DESC;
+
+
+SELECT Ccity, COUNT(*) AS Total_Customers           -- Count customers city-wise
+FROM CUSTOMERS
+GROUP BY Ccity;
+
+
+SELECT PURCHASE.Pquantity                           -- Display purchased quantity of Maya
+FROM PURCHASE
+JOIN CUSTOMERS
+ON PURCHASE.CNo = CUSTOMERS.CNo
+WHERE CUSTOMERS.Cname='Maya';
+
+
+CREATE VIEW Stationary_View AS                      -- Create view for stationary items
+SELECT Iname, Iprice, Icount
+FROM ITEMS
+WHERE Itype='Stationary';
+
+
+Theory:
+
+Q7 — SQL Queries with Comments
+CREATE TABLE CUSTOMERS(                             -- Create CUSTOMERS table
+CNo INT PRIMARY KEY,                                -- Customer number as primary key
+Cname VARCHAR(50),                                  -- Store customer name
+Ccity VARCHAR(50),                                  -- Store customer city
+CMobile VARCHAR(15)                                 -- Store customer mobile number
+);
+
+CREATE TABLE ITEMS(                                 -- Create ITEMS table
+INo INT PRIMARY KEY,                                -- Item number as primary key
+Iname VARCHAR(50),                                  -- Store item name
+Itype VARCHAR(50),                                  -- Store item type
+Iprice DECIMAL(10,2),                               -- Store item price
+Icount INT                                          -- Store item count
+);
+
+CREATE TABLE PURCHASE(                              -- Create PURCHASE table
+PNo INT PRIMARY KEY,                                -- Purchase number as primary key
+Pdate DATE,                                         -- Store purchase date
+Pquantity INT,                                      -- Store purchase quantity
+CNo INT,                                            -- Store customer number
+INo INT,                                            -- Store item number
+FOREIGN KEY(CNo) REFERENCES CUSTOMERS(CNo),         -- Foreign key for customer
+FOREIGN KEY(INo) REFERENCES ITEMS(INo)              -- Foreign key for item
+);
+
+INSERT INTO CUSTOMERS VALUES                        -- Insert records into CUSTOMERS table
+(1,'Maya','Pune','9876543210'),
+(2,'Gopal','Mumbai','9123456780'),
+(3,'Amit','Pune','9988776655');
+
+INSERT INTO ITEMS VALUES                            -- Insert records into ITEMS table
+(101,'Notebook','Stationary',500,20),
+(102,'Pen','Stationary',100,50),
+(103,'Printer','Electronics',5000,5),
+(104,'Bag','Stationary',800,15);
+
+INSERT INTO PURCHASE VALUES                         -- Insert records into PURCHASE table
+(1,'2026-01-10',2,1,101),
+(2,'2026-01-12',1,2,103),
+(3,'2026-01-15',3,1,104),
+(4,'2026-01-20',5,3,102);
+
+SELECT *                                            -- Display stationary items within price range
+FROM ITEMS
+WHERE Itype='Stationary'
+AND Iprice BETWEEN 400 AND 1000;
+
+UPDATE CUSTOMERS                                    -- Update mobile number
+SET CMobile='9999999999'
+WHERE Cname='Gopal';
+
+SELECT *                                            -- Display item with maximum price
+FROM ITEMS
+WHERE Iprice=
+(
+SELECT MAX(Iprice)
+FROM ITEMS
+);
+
+SELECT *                                            -- Display purchases from recent to oldest
+FROM PURCHASE
+ORDER BY Pdate DESC;
+
+SELECT Ccity, COUNT(*) AS Total_Customers           -- Count customers city-wise
+FROM CUSTOMERS
+GROUP BY Ccity;
+
+SELECT PURCHASE.Pquantity                           -- Display purchased quantity of Maya
+FROM PURCHASE
+JOIN CUSTOMERS
+ON PURCHASE.CNo = CUSTOMERS.CNo
+WHERE CUSTOMERS.Cname='Maya';
+
+CREATE VIEW Stationary_View AS                      -- Create view for stationary items
+SELECT Iname, Iprice, Icount
+FROM ITEMS
+WHERE Itype='Stationary';
+
+
+Theory:
+
+Aim:
+To create customer, item, and purchase tables and perform SQL queries using conditions, aggregate functions, and views.
+
+Objective:
+To understand table relationships using foreign keys.
+To perform SQL queries using UPDATE, ORDER BY, GROUP BY, and subqueries.
+To create and use SQL views.
+
+Theory:
+SQL is used to manage and manipulate relational databases.
+
+Important concepts used:
+
+BETWEEN → checks values within range
+UPDATE → modifies records
+MAX() → finds maximum value
+ORDER BY → sorts records
+GROUP BY → groups records together
+VIEW → virtual table created from query
+JOIN → combines data from tables
+
+Conclusion:
+Thus, customer, item, and purchase tables were created successfully and different SQL queries and view operations were executed correctly.

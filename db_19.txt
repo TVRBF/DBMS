@@ -1,0 +1,199 @@
+CREATE TABLE Emp (
+    Emp_no INT,
+    Emp_name VARCHAR(50),
+    Emp_salary DOUBLE
+);
+CREATE TABLE Tracking (
+    Emp_no INT,
+    Emp_salary DOUBLE
+);
+--AFTER INSERT Trigger
+DELIMITER $$
+
+CREATE TRIGGER emp_insert
+
+AFTER INSERT
+ON Emp
+
+FOR EACH ROW
+
+BEGIN
+
+    IF NEW.Emp_salary < 50000 THEN
+
+        INSERT INTO Tracking
+        VALUES
+        (
+            NEW.Emp_no,
+            NEW.Emp_salary
+        );
+
+    END IF;
+
+END$$
+
+DELIMITER ;
+--AFTER UPDATE Trigger
+DELIMITER $$
+
+CREATE TRIGGER emp_update
+
+AFTER UPDATE
+ON Emp
+
+FOR EACH ROW
+
+BEGIN
+
+    IF NEW.Emp_salary < 50000 THEN
+
+        INSERT INTO Tracking
+        VALUES
+        (
+            NEW.Emp_no,
+            NEW.Emp_salary
+        );
+
+    END IF;
+
+END$$
+
+DELIMITER ;
+AFTER DELETE Trigger
+DELIMITER $$
+
+CREATE TRIGGER emp_delete
+
+AFTER DELETE
+ON Emp
+
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO Tracking
+    VALUES
+    (
+        OLD.Emp_no,
+        OLD.Emp_salary
+    );
+
+END$$
+
+DELIMITER ;
+--INSERT Operation
+INSERT INTO Emp
+VALUES
+(1, 'Amit', 40000);
+--UPDATE Operation
+UPDATE Emp
+SET Emp_salary = 30000
+WHERE Emp_no = 1;
+--DELETE Operation
+DELETE FROM Emp
+WHERE Emp_no = 1;
+--Check Tracking Table
+SELECT * FROM Tracking;
+
+Aim
+To create an AFTER Trigger for INSERT, UPDATE, and DELETE operations on Emp table and store salary tracking information in Tracking table.
+
+Objective
+To understand AFTER triggers in PL/SQL.
+To perform trigger operations on INSERT, UPDATE, and DELETE events.
+To validate salary conditions using triggers.
+To store inserted and updated salary details into another table.
+Theory
+A Trigger is a stored PL/SQL block that automatically executes when a database event occurs.
+
+AFTER Trigger
+AFTER Trigger executes after INSERT, UPDATE, or DELETE operations.
+
+In this practical:
+
+Trigger fires when:
+Salary inserted is less than Rs. 50,000
+Salary updated is less than Rs. 50,000
+Salary details are stored in Tracking table.
+
+Conclusion
+Thus, the AFTER trigger was successfully created and executed for INSERT, UPDATE, and DELETE operations on Emp table.
+
+pl/sql code:- 
+CREATE TABLE Emp(
+    Emp_no NUMBER PRIMARY KEY,
+    Emp_name VARCHAR2(50),
+    Emp_salary NUMBER
+);
+CREATE TABLE Tracking(
+    Emp_no NUMBER,
+    Emp_salary NUMBER
+);
+CREATE OR REPLACE TRIGGER trg_emp_tracking
+AFTER INSERT OR UPDATE OR DELETE
+ON Emp
+FOR EACH ROW
+
+BEGIN
+
+    IF INSERTING THEN
+
+        IF :NEW.Emp_salary < 50000 THEN
+
+            INSERT INTO Tracking
+            VALUES(
+                :NEW.Emp_no,
+                :NEW.Emp_salary
+            );
+
+            DBMS_OUTPUT.PUT_LINE(
+            'Inserted Salary Less Than 50000');
+
+        END IF;
+
+    ELSIF UPDATING THEN
+
+        IF :NEW.Emp_salary < 50000 THEN
+
+            INSERT INTO Tracking
+            VALUES(
+                :NEW.Emp_no,
+                :NEW.Emp_salary
+            );
+
+            DBMS_OUTPUT.PUT_LINE(
+            'Updated Salary Less Than 50000');
+
+        END IF;
+
+    ELSIF DELETING THEN
+
+        DBMS_OUTPUT.PUT_LINE(
+        'Employee Record Deleted');
+
+    END IF;
+
+END;
+/
+SET SERVEROUTPUT ON;
+
+INSERT INTO Emp
+VALUES(1, 'Amit', 45000);
+
+INSERT INTO Emp
+VALUES(2, 'Rahul', 60000);
+
+COMMIT;
+
+UPDATE Emp
+SET Emp_salary = 40000
+WHERE Emp_no = 2;
+
+COMMIT;
+DELETE FROM Emp
+WHERE Emp_no = 1;
+
+COMMIT;
+SELECT * FROM Emp;
+
+SELECT * FROM Tracking;

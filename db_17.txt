@@ -1,0 +1,123 @@
+❗In MySQL, a FUNCTION cannot use OUT parameters.
+Only PROCEDURE supports OUT parameters.
+
+So your question is technically mixed:
+
+FUNCTION → returns only one value
+PROCEDURE → can return multiple values (OUT parameters)
+
+DELIMITER $$
+
+CREATE PROCEDURE Age_calc(
+
+    IN dob DATE,
+    OUT v_years INT,
+    OUT v_months INT,
+    OUT v_days INT
+
+)
+
+BEGIN
+
+    DECLARE total_months INT;
+
+    SET v_years =
+    TIMESTAMPDIFF(YEAR, dob, CURDATE());
+                                        -- calculate years
+
+    SET total_months =
+    TIMESTAMPDIFF(MONTH, dob, CURDATE());
+
+    SET v_months =
+    total_months % 12;
+                                        -- calculate remaining months
+
+    SET v_days =
+    DAYDIFF(CURDATE()) - DAY(dob);
+                                        -- calculate remaining days
+
+END$$
+
+DELIMITER ;
+
+CALL Age_calc('2005-03-10', @y, @m, @d);
+
+SELECT @y AS Years,
+       @m AS Months,
+       @d AS Days;
+Aim
+To create a Stored Function titled Age_calc to calculate age in years, months, and days using date of birth.
+
+Objective
+To understand Stored Functions in PL/SQL.
+To use IN and OUT parameters.
+To calculate age using date functions.
+To return values from function.
+Theory
+A Stored Function is a named PL/SQL block that returns a value using RETURN statement.
+
+Features of Function
+Accepts parameters
+Returns a value
+Can use OUT parameters
+In this practical:
+
+Date of birth is accepted as input.
+Age is calculated in:
+Years
+Months
+Days
+The function returns years directly and months/days indirectly using OUT parameters.
+Conclusion
+Thus, the Stored Function Age_calc was successfully created and executed to calculate age in years, months, and days.
+
+pl/sql code:-
+CREATE OR REPLACE FUNCTION Age_calc
+(
+    dob IN DATE,
+    months OUT NUMBER,
+    days OUT NUMBER
+)
+
+RETURN NUMBER
+
+IS
+
+    years NUMBER;
+
+BEGIN
+
+    years := FLOOR(MONTHS_BETWEEN(SYSDATE, dob) / 12);
+
+    months := FLOOR(MOD(MONTHS_BETWEEN(SYSDATE, dob), 12));
+
+    days := FLOOR(SYSDATE -
+           ADD_MONTHS(dob,
+           years * 12 + months));
+
+    RETURN years;
+
+END;
+/
+DECLARE
+
+    y NUMBER;
+    m NUMBER;
+    d NUMBER;
+
+BEGIN
+
+    y := Age_calc(
+            TO_DATE('15-08-2000','DD-MM-YYYY'),
+            m,
+            d
+         );
+
+    DBMS_OUTPUT.PUT_LINE('Years : ' || y);
+
+    DBMS_OUTPUT.PUT_LINE('Months : ' || m);
+
+    DBMS_OUTPUT.PUT_LINE('Days : ' || d);
+
+END;
+/

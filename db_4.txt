@@ -1,0 +1,123 @@
+CREATE TABLE Cust_Master(                           -- Create customer master table
+Cust_no VARCHAR(10) PRIMARY KEY,                    -- Customer number as primary key
+Cust_name VARCHAR(50),                              -- Store customer name
+Cust_addr VARCHAR(100)                              -- Store customer address
+);
+
+CREATE TABLE Orders(                                -- Create Orders table
+Order_no INT PRIMARY KEY,                           -- Order number as primary key
+Cust_no VARCHAR(10),                                -- Store customer number
+Order_date DATE,                                    -- Store order date
+Qty_Ordered INT,                                    -- Store ordered quantity
+FOREIGN KEY(Cust_no) REFERENCES Cust_Master(Cust_no) -- Foreign key reference
+);
+
+CREATE TABLE Product(                               -- Create Product table
+Product_no INT PRIMARY KEY,                         -- Product number as primary key
+Product_name VARCHAR(50),                           -- Store product name
+Order_no INT,                                       -- Store order number
+FOREIGN KEY(Order_no) REFERENCES Orders(Order_no)   -- Foreign key reference
+);
+
+INSERT INTO Cust_Master VALUES                      -- Insert records into customer table
+('C1001','Amit','Pune'),
+('C1002','Anaya','Banglore'),
+('C1005','Rohit','Manglore'),
+('C1007','Ajay','Mumbai'),
+('C1008','Maya','Banglore');
+
+INSERT INTO Orders VALUES                           -- Insert records into Orders table
+(1,'C1002','2026-01-10',5),
+(2,'C1005','2026-01-12',3),
+(3,'C1007','2026-01-15',7),
+(4,'C1008','2026-01-20',2);
+
+INSERT INTO Product VALUES                          -- Insert records into Product table
+(101,'Laptop',1),
+(102,'Mouse',2),
+(103,'Keyboard',3),
+(104,'Printer',4);
+
+
+SELECT Cust_name                                    -- Display customers having A as second letter
+FROM Cust_Master
+WHERE Cust_name LIKE '_A%';
+
+
+SELECT *                                            -- Display orders of selected customer numbers
+FROM Orders
+WHERE Cust_no IN ('C1002','C1005','C1007','C1008');
+
+
+SELECT *                                            -- Display customers from Banglore or Manglore
+FROM Cust_Master
+WHERE Cust_addr IN ('Banglore','Manglore');
+
+
+SELECT Cust_Master.Cust_name, Product.Product_name  -- Display customer name and purchased product
+FROM Cust_Master
+JOIN Orders
+ON Cust_Master.Cust_no = Orders.Cust_no
+JOIN Product
+ON Orders.Order_no = Product.Order_no;
+
+
+CREATE VIEW View1 AS                                -- Create View1
+SELECT Cust_Master.Cust_name, Product.Product_name
+FROM Cust_Master
+JOIN Orders
+ON Cust_Master.Cust_no = Orders.Cust_no
+JOIN Product
+ON Orders.Order_no = Product.Order_no;
+
+
+SELECT Cust_Master.Cust_name, Product.Product_name, Orders.Qty_Ordered -- Display product and quantity
+FROM Cust_Master
+JOIN Orders
+ON Cust_Master.Cust_no = Orders.Cust_no
+JOIN Product
+ON Orders.Order_no = Product.Order_no;
+
+
+SELECT *                                            -- Perform inner join operation
+FROM Cust_Master
+INNER JOIN Orders
+ON Cust_Master.Cust_no = Orders.Cust_no;
+
+
+SELECT *                                            -- Perform left join operation
+FROM Cust_Master
+LEFT JOIN Orders
+ON Cust_Master.Cust_no = Orders.Cust_no;
+
+
+SELECT *                                            -- Perform right join operation
+FROM Cust_Master
+RIGHT JOIN Orders
+ON Cust_Master.Cust_no = Orders.Cust_no;
+
+
+Theory:
+Aim:
+To create customer, order, and product tables and perform SQL queries using joins and views.
+
+Objective:
+To understand table relationships using foreign keys.
+To perform SQL queries using joins and conditions.
+To create and use SQL views.
+
+Theory:
+SQL is used to create and manage relational databases.
+
+Important concepts used:
+
+JOIN → combines data from multiple tables
+INNER JOIN → shows matching records
+LEFT JOIN → shows all left table records
+RIGHT JOIN → shows all right table records
+VIEW → virtual table created from query
+LIKE → pattern matching
+IN → checks multiple values
+
+Conclusion:
+Thus, customer, order, and product tables were created successfully and different SQL queries using joins and views were executed correctly.

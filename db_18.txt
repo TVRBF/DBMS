@@ -1,0 +1,181 @@
+CREATE TABLE CUSTOMERS (
+    ID INT,
+    NAME VARCHAR(50),
+    SALARY DOUBLE
+);
+CREATE TABLE SALARY_AUDIT (
+    ID INT,
+    OLD_SALARY DOUBLE,
+    NEW_SALARY DOUBLE,
+    DIFFERENCE DOUBLE,
+    ACTION_TYPE VARCHAR(20)
+);
+DELIMITER $$
+
+CREATE TRIGGER customer_insert
+
+AFTER INSERT
+ON CUSTOMERS
+
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO SALARY_AUDIT
+    VALUES
+    (
+        NEW.ID,
+        NULL,
+        NEW.SALARY,
+        NEW.SALARY,
+        'INSERT'
+    );
+
+END$$
+
+DELIMITER ;
+DELIMITER $$
+
+CREATE TRIGGER customer_update
+
+AFTER UPDATE
+ON CUSTOMERS
+
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO SALARY_AUDIT
+    VALUES
+    (
+        NEW.ID,
+        OLD.SALARY,
+        NEW.SALARY,
+        NEW.SALARY - OLD.SALARY,
+        'UPDATE'
+    );
+
+END$$
+
+DELIMITER ;
+DELIMITER $$
+
+CREATE TRIGGER customer_delete
+
+AFTER DELETE
+ON CUSTOMERS
+
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO SALARY_AUDIT
+    VALUES
+    (
+        OLD.ID,
+        OLD.SALARY,
+        NULL,
+        OLD.SALARY,
+        'DELETE'
+    );
+
+END$$
+
+DELIMITER ;
+--Test
+INSERT INTO CUSTOMERS
+VALUES (1, 'Rahul', 50000);
+
+UPDATE CUSTOMERS
+SET SALARY = 60000
+WHERE ID = 1;
+
+DELETE FROM CUSTOMERS
+WHERE ID = 1;
+
+SELECT * FROM SALARY_AUDIT;
+
+Aim
+To create a row-level trigger on CUSTOMERS table that fires on INSERT, UPDATE, and DELETE operations and displays salary difference between old and new values.
+
+Objective
+To understand row-level triggers.
+To handle INSERT, UPDATE, and DELETE events using triggers.
+To use :OLD and :NEW values in triggers.
+To display salary difference automatically.
+Theory
+A Trigger is a PL/SQL block that automatically executes when database events occur.
+
+Trigger Events
+INSERT
+UPDATE
+DELETE
+Special Trigger Variables
+:OLD → Stores old record values.
+:NEW → Stores new record values.
+In this practical:
+
+Trigger fires during INSERT, UPDATE, and DELETE operations.
+Salary differences are displayed automatically.
+
+PL/SQL CODE:-
+CREATE TABLE CUSTOMERS(
+    Cust_id NUMBER PRIMARY KEY,
+    Cust_Name VARCHAR2(50),
+    Salary NUMBER
+);
+INSERT INTO CUSTOMERS
+VALUES(1, 'Amit', 25000);
+
+INSERT INTO CUSTOMERS
+VALUES(2, 'Sneha', 30000);
+
+COMMIT;
+CREATE OR REPLACE TRIGGER trg_salary_difference
+BEFORE INSERT OR UPDATE OR DELETE
+ON CUSTOMERS
+FOR EACH ROW
+
+BEGIN
+
+    IF INSERTING THEN
+
+        DBMS_OUTPUT.PUT_LINE(
+        'New Salary Inserted : ' || :NEW.Salary);
+
+    ELSIF UPDATING THEN
+
+        DBMS_OUTPUT.PUT_LINE(
+        'Old Salary : ' || :OLD.Salary);
+
+        DBMS_OUTPUT.PUT_LINE(
+        'New Salary : ' || :NEW.Salary);
+
+        DBMS_OUTPUT.PUT_LINE(
+        'Salary Difference : ' ||
+        (:NEW.Salary - :OLD.Salary));
+
+    ELSIF DELETING THEN
+
+        DBMS_OUTPUT.PUT_LINE(
+        'Deleted Salary : ' || :OLD.Salary);
+
+    END IF;
+
+END;
+/
+SET SERVEROUTPUT ON;
+INSERT INTO CUSTOMERS
+VALUES(3, 'Rahul', 40000);
+
+COMMIT;
+UPDATE CUSTOMERS
+SET Salary = 45000
+WHERE Cust_id = 1;
+
+COMMIT;
+DELETE FROM CUSTOMERS
+WHERE Cust_id = 2;
+
+COMMIT;
+SELECT * FROM CUSTOMERS;

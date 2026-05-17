@@ -1,0 +1,224 @@
+mongosh
+// Switch to EmployeeDB database
+use EmployeeDB
+
+
+
+// Insert multiple employee documents into Employee collection
+db.Employee.insertMany([
+{
+Name:{FName:"Rahul",LName:"Sharma"},
+Company_name:"Infosys",
+Salary:55000,
+Designation:"Developer",
+Age:28,
+Expertise:["MongoDB","MySQL"],
+DOB:"1998-04-12",
+Email:"rahul@gmail.com",
+Contact:"9876543210",
+Address:[
+{PAddr:"Pune"},
+{LAddr:"Mumbai"}
+]
+},
+
+{
+Name:{FName:"Amit",LName:"Patil"},
+Company_name:"TCS",
+Salary:35000,
+Designation:"Tester",
+Age:24,
+Expertise:["Java","Python"],
+DOB:"2001-05-10",
+Email:"amit@gmail.com",
+Contact:"9876501234",
+Address:[
+{PAddr:"Nashik"},
+{LAddr:"Pune"}
+]
+},
+
+{
+Name:{FName:"Sneha",LName:"Joshi"},
+Company_name:"Infosys",
+Salary:65000,
+Designation:"Manager",
+Age:32,
+Expertise:["MongoDB","Cassandra"],
+DOB:"1994-07-15",
+Email:"sneha@gmail.com",
+Contact:"9988776655",
+Address:[
+{PAddr:"Mumbai"},
+{LAddr:"Pune"}
+]
+},
+
+{
+Name:{FName:"Rohit",LName:"Kale"},
+Company_name:"Wipro",
+Salary:42000,
+Designation:"Developer",
+Age:29,
+Expertise:["MySQL","C++"],
+DOB:"1997-02-18",
+Email:"rohit@gmail.com",
+Contact:"9090909090",
+Address:[
+{PAddr:"Nagpur"},
+{LAddr:"Satara"}
+]
+},
+
+{
+Name:{FName:"Priya",LName:"Deshmukh"},
+Company_name:"TCS",
+Salary:48000,
+Designation:"Developer",
+Age:27,
+Expertise:["Python","MongoDB"],
+DOB:"1999-11-25",
+Email:"priya@gmail.com",
+Contact:"8888888888",
+Address:[
+{PAddr:"Pune"},
+{LAddr:"Kolhapur"}
+]
+}
+])
+
+
+
+
+// Find first name of employees with age less than 30 and salary greater than 50000
+db.Employee.find(
+{
+Age:{$lt:30},
+Salary:{$gt:50000}
+},
+{
+"Name.FName":1,
+_id:0
+}
+)
+
+
+
+
+// Create new document if matching document is not present
+db.Employee.updateOne(
+{
+Designation:"Tester",
+Company_name:"TCS",
+Age:25
+},
+{
+$set:{
+Name:{FName:"Kiran",LName:"Patil"},
+Salary:32000
+}
+},
+{
+upsert:true
+}
+)
+
+
+
+
+// Find employees where age is less than 30 or salary greater than 40000
+db.Employee.find(
+{
+$or:[
+{Age:{$lt:30}},
+{Salary:{$gt:40000}}
+]
+}
+)
+
+
+
+
+// Display employees whose designation is not Developer
+db.Employee.find(
+{
+Designation:{$ne:"Developer"}
+}
+)
+
+
+
+
+// Display _id, designation, address and name of Infosys employees
+db.Employee.find(
+{
+Company_name:"Infosys"
+},
+{
+Designation:1,
+Address:1,
+Name:1
+}
+)
+
+
+
+
+// Display only first name and last name of all employees
+db.Employee.find(
+{},
+{
+"Name.FName":1,
+"Name.LName":1,
+_id:0
+}
+)
+
+
+Aim
+
+To study MongoDB CRUD operations using Employee collection and query operators.
+
+Objective
+To perform CRUD operations in MongoDB.
+To understand projection and conditional operators.
+To work with embedded documents and arrays.
+To retrieve selected fields from documents.
+Theory
+
+MongoDB is a NoSQL database that stores data in the form of documents and collections.
+
+CRUD operations in MongoDB are:
+
+Create
+Read
+Update
+Delete
+
+Functions Used:
+
+insertMany() → Inserts multiple documents
+find() → Retrieves documents
+updateOne() → Updates one document
+
+Operators Used:
+
+$lt → Less than
+$gt → Greater than
+$or → Logical OR
+$ne → Not equal
+upsert:true → Insert if document not found
+
+Projection:
+Projection is used to display selected fields from documents.
+
+Advantages of MongoDB:
+
+Flexible schema
+High performance
+Easy to store nested documents
+Suitable for large scale applications
+Conclusion
+
+Thus, MongoDB CRUD operations were successfully performed using conditional operators, projection and embedded documents.
+

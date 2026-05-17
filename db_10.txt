@@ -1,0 +1,257 @@
+mongosh
+
+
+// Switch to EmployeeDB database
+use EmployeeDB
+
+
+
+// Insert multiple employee documents into Employee collection
+db.Employee.insertMany([
+{
+Name:{FName:"Rahul",LName:"Sharma"},
+Company_name:"TCS",
+Salary:50000,
+Designation:"Developer",
+Age:28,
+Expertise:["MongoDB","MySQL"],
+DOB:"1998-04-12",
+Email:"rahul@gmail.com",
+Contact:"9876543210",
+Address:{City:"Pune"}
+},
+
+{
+Name:{FName:"Amit",LName:"Patil"},
+Company_name:"Infosys",
+Salary:60000,
+Designation:"Tester",
+Age:42,
+Expertise:["Java","Python"],
+DOB:"1984-05-10",
+Email:"amit@gmail.com",
+Contact:"9876501234",
+Address:{City:"Mumbai"}
+},
+
+{
+Name:{FName:"Sneha",LName:"Joshi"},
+Company_name:"TCS",
+Salary:70000,
+Designation:"Manager",
+Age:45,
+Expertise:["MongoDB","Cassandra"],
+DOB:"1981-07-15",
+Email:"sneha@gmail.com",
+Contact:"9988776655",
+Address:{City:"Pune"}
+},
+
+{
+Name:{FName:"Rohit",LName:"Kale"},
+Company_name:"Wipro",
+Salary:40000,
+Designation:"Developer",
+Age:30,
+Expertise:["MySQL","C++"],
+DOB:"1996-02-18",
+Email:"rohit@gmail.com",
+Contact:"9090909090",
+Address:{City:"Nagpur"}
+},
+
+{
+Name:{FName:"Priya",LName:"Deshmukh"},
+Company_name:"Infosys",
+Salary:55000,
+Designation:"Developer",
+Age:44,
+Expertise:["Python","MongoDB"],
+DOB:"1982-11-25",
+Email:"priya@gmail.com",
+Contact:"8888888888",
+Address:{City:"Pune"}
+}
+])
+
+
+
+
+// Calculate total salary of employees for each company
+var mapFunction = function() {
+emit(this.Company_name, this.Salary);
+};
+
+var reduceFunction = function(key, values) {
+return Array.sum(values);
+};
+
+db.Employee.mapReduce(
+mapFunction,
+reduceFunction,
+{
+out:"TotalSalaryPerCompany"
+}
+)
+
+db.TotalSalaryPerCompany.find()
+
+
+
+
+// Calculate total salary of employees working in TCS
+var mapFunction = function() {
+if(this.Company_name=="TCS")
+emit(this.Company_name, this.Salary);
+};
+
+var reduceFunction = function(key, values) {
+return Array.sum(values);
+};
+
+db.Employee.mapReduce(
+mapFunction,
+reduceFunction,
+{
+out:"TCSSalary"
+}
+)
+
+db.TCSSalary.find()
+
+
+
+
+// Calculate average salary of employees whose city is Pune
+var mapFunction = function() {
+if(this.Address.City=="Pune")
+emit(this.Company_name, {total:this.Salary, count:1});
+};
+
+var reduceFunction = function(key, values) {
+var result = {total:0, count:0};
+
+values.forEach(function(v){
+result.total += v.total;
+result.count += v.count;
+});
+
+return result;
+};
+
+var finalizeFunction = function(key, reducedValue) {
+return reducedValue.total / reducedValue.count;
+};
+
+db.Employee.mapReduce(
+mapFunction,
+reduceFunction,
+{
+out:"AverageSalaryPune",
+finalize:finalizeFunction
+}
+)
+
+db.AverageSalaryPune.find()
+
+
+
+
+// Count total employees whose city is Pune
+var mapFunction = function() {
+if(this.Address.City=="Pune")
+emit(this.Address.City, 1);
+};
+
+var reduceFunction = function(key, values) {
+return Array.sum(values);
+};
+
+db.Employee.mapReduce(
+mapFunction,
+reduceFunction,
+{
+out:"PuneCount"
+}
+)
+
+db.PuneCount.find()
+
+
+
+
+// Count employees whose city is Pune and age greater than 40
+var mapFunction = function() {
+if(this.Address.City=="Pune" && this.Age>40)
+emit(this.Address.City, 1);
+};
+
+var reduceFunction = function(key, values) {
+return Array.sum(values);
+};
+
+db.Employee.mapReduce(
+mapFunction,
+reduceFunction,
+{
+out:"PuneAgeCount"
+}
+)
+
+db.PuneAgeCount.find()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Aim
+
+To study and perform MongoDB Map Reduce operations on Employee collection.
+
+Objective
+To understand Map Reduce in MongoDB.
+To perform aggregation operations.
+To calculate total salary, average salary and counts.
+To work with filtering conditions in Map Reduce.
+Theory
+
+MongoDB Map Reduce is used for processing large amounts of data and performing aggregation operations.
+
+Map Reduce contains:
+
+Map Function
+Reduce Function
+Finalize Function
+
+Functions Used:
+
+emit() → Sends key-value pair
+Array.sum() → Calculates sum
+mapReduce() → Performs map reduce operation
+
+Operations Performed:
+
+Total salary calculation
+Average salary calculation
+Counting records
+Filtering based on conditions
+
+Advantages:
+
+Handles large datasets
+Performs aggregation efficiently
+Useful for data analysis
+Conclusion
+
+Thus, MongoDB Map Reduce operations were successfully performed for salary calculation, counting and aggregation on Employee collection.

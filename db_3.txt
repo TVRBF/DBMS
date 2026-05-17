@@ -1,0 +1,123 @@
+CREATE TABLE Branch(                                  -- Create Branch table
+branch_name VARCHAR(50) PRIMARY KEY,                 -- Branch name as primary key
+branch_city VARCHAR(50) NOT NULL,                    -- Store branch city
+assets DECIMAL(10,2)                                 -- Store branch assets
+);
+
+CREATE TABLE Account(                                -- Create Account table
+acc_no INT PRIMARY KEY,                              -- Account number as primary key
+branch_name VARCHAR(50),                             -- Store branch name
+balance DECIMAL(10,2),                               -- Store account balance
+FOREIGN KEY(branch_name) REFERENCES Branch(branch_name) -- Foreign key reference
+);
+
+CREATE TABLE Customer(                               -- Create Customer table
+cust_name VARCHAR(50) PRIMARY KEY,                   -- Customer name as primary key
+cust_street VARCHAR(50),                             -- Store customer street
+cust_city VARCHAR(50)                                -- Store customer city
+);
+
+CREATE TABLE Depositor(                              -- Create Depositor table
+cust_name VARCHAR(50),                               -- Store customer name
+acc_no INT,                                          -- Store account number
+PRIMARY KEY(cust_name, acc_no),                      -- Composite primary key
+FOREIGN KEY(cust_name) REFERENCES Customer(cust_name), -- Foreign key for customer
+FOREIGN KEY(acc_no) REFERENCES Account(acc_no)       -- Foreign key for account
+);
+
+CREATE TABLE Loan(                                   -- Create Loan table
+loan_no INT PRIMARY KEY,                             -- Loan number as primary key
+branch_name VARCHAR(50),                             -- Store branch name
+amount DECIMAL(10,2),                                -- Store loan amount
+FOREIGN KEY(branch_name) REFERENCES Branch(branch_name) -- Foreign key reference
+);
+
+CREATE TABLE Borrower(                               -- Create Borrower table
+cust_name VARCHAR(50),                               -- Store customer name
+loan_no INT,                                         -- Store loan number
+PRIMARY KEY(cust_name, loan_no),                     -- Composite primary key
+FOREIGN KEY(cust_name) REFERENCES Customer(cust_name), -- Foreign key for customer
+FOREIGN KEY(loan_no) REFERENCES Loan(loan_no)        -- Foreign key for loan
+);
+
+INSERT INTO Branch VALUES                            -- Insert records into Branch table
+('Wadia College','Pune',600000),
+('FC Road','Pune',500000),
+('Shivaji Nagar','Mumbai',700000);
+
+INSERT INTO Account VALUES                           -- Insert records into Account table
+(101,'Wadia College',20000),
+(102,'Wadia College',18000),
+(103,'FC Road',10000),
+(104,'Shivaji Nagar',25000);
+
+INSERT INTO Customer VALUES                          -- Insert records into Customer table
+('Pooja','JM Road','Pune'),
+('Pratik','Camp','Pune'),
+('Amit','MG Road','Mumbai'),
+('Rohit','Kothrud','Pune');
+
+INSERT INTO Depositor VALUES                         -- Insert records into Depositor table
+('Pooja',101),
+('Pratik',102),
+('Amit',103),
+('Rohit',104);
+
+INSERT INTO Loan VALUES                              -- Insert records into Loan table
+(201,'Wadia College',1400),
+(202,'FC Road',5000),
+(203,'Shivaji Nagar',20000);
+
+INSERT INTO Borrower VALUES                          -- Insert records into Borrower table
+('Pooja',201),
+('Amit',202),
+('Rohit',203);
+
+SELECT branch_name, AVG(balance) AS Average_Balance  -- Find average balance branch-wise
+FROM Account                                         -- Select data from Account table
+GROUP BY branch_name                                 -- Group records by branch name
+HAVING AVG(balance) > 15000;                         -- Display branches having average > 1
+
+SELECT COUNT(*) AS Total_Customers                   -- Count total tuples in Customer table
+FROM Customer;                                       -- Select data from Customer table
+
+SELECT SUM(amount) AS Total_Loan_Amount              -- Calculate total loan amount
+FROM Loan;                                           -- Select data from Loan table
+
+DELETE FROM Loan                                     -- Delete records from Loan table
+WHERE amount BETWEEN 1300 AND 1500;                  -- Condition for loan amount
+
+SELECT branch_name, AVG(balance) AS Average_Balance  -- Find average balance at each branch
+FROM Account                                         -- Select data from Account table
+GROUP BY branch_name;                                -- Group records by branch name
+
+SELECT cust_name, cust_city                          -- Display customer name and city
+FROM Customer                                        -- Select data from Customer table
+WHERE cust_name LIKE 'P%';                           -- Names starting with letter P
+
+
+Theory:-
+
+Aim:
+To perform SQL queries using aggregate functions, grouping, conditions, and delete operation.
+
+Objective:
+To understand SQL aggregate functions.
+To use GROUP BY and HAVING clause.
+To perform DELETE and LIKE operations in SQL.
+
+Theory:
+SQL aggregate functions are used to perform calculations on data stored in tables.
+
+Important concepts used:
+
+AVG() → calculates average value
+SUM() → calculates total value
+COUNT() → counts records
+GROUP BY → groups records together
+HAVING → applies condition on grouped data
+DELETE → removes records
+LIKE → searches pattern in data
+
+Conclusion:
+Thus, SQL queries using aggregate functions, grouping, delete operation, and pattern matching were executed successfully.

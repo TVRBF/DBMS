@@ -1,0 +1,123 @@
+CREATE TABLE Branch(                                -- Create Branch table
+branch_name VARCHAR(50) PRIMARY KEY,               -- Branch name as primary key
+branch_city VARCHAR(50) NOT NULL,                  -- Store branch city
+asset DECIMAL(10,2)                                -- Store branch asset
+);
+
+CREATE TABLE Account(                               -- Create Account table
+Acc_no INT PRIMARY KEY,                             -- Account number as primary key
+branch_name VARCHAR(50),                            -- Store branch name
+balance DECIMAL(10,2) NOT NULL,                     -- Store account balance
+FOREIGN KEY(branch_name) REFERENCES Branch(branch_name) -- Foreign key reference
+);
+
+CREATE TABLE Customer(                              -- Create Customer table
+cust_name VARCHAR(50) PRIMARY KEY,                  -- Customer name as primary key
+cust_street VARCHAR(50),                            -- Store customer street
+cust_city VARCHAR(50)                               -- Store customer city
+);
+
+CREATE TABLE Depositor(                             -- Create Depositor table
+cust_name VARCHAR(50),                              -- Store customer name
+Acc_no INT,                                         -- Store account number
+PRIMARY KEY(cust_name, Acc_no),                     -- Composite primary key
+FOREIGN KEY(cust_name) REFERENCES Customer(cust_name), -- Foreign key for customer
+FOREIGN KEY(Acc_no) REFERENCES Account(Acc_no)      -- Foreign key for account
+);
+
+CREATE TABLE Loan(                                  -- Create Loan table
+loan_no INT PRIMARY KEY,                            -- Loan number as primary key
+branch_name VARCHAR(50),                            -- Store branch name
+amount DECIMAL(10,2) NOT NULL,                      -- Store loan amount
+FOREIGN KEY(branch_name) REFERENCES Branch(branch_name) -- Foreign key reference
+);
+
+CREATE TABLE Borrower(                              -- Create Borrower table
+cust_name VARCHAR(50),                              -- Store customer name
+loan_no INT,                                        -- Store loan number
+PRIMARY KEY(cust_name, loan_no),                    -- Composite primary key
+FOREIGN KEY(cust_name) REFERENCES Customer(cust_name), -- Foreign key for customer
+FOREIGN KEY(loan_no) REFERENCES Loan(loan_no)       -- Foreign key for loan
+);
+
+INSERT INTO Branch VALUES                           -- Insert records into Branch table
+('Wadia College','Pune',500000),
+('FC Road','Pune',400000),
+('Shivaji Nagar','Mumbai',600000);
+
+INSERT INTO Account VALUES                          -- Insert records into Account table
+(101,'Wadia College',15000),
+(102,'FC Road',10000),
+(103,'Shivaji Nagar',20000);
+
+INSERT INTO Customer VALUES                         -- Insert records into Customer table
+('Amit','JM Road','Pune'),
+('Priya','Camp','Pune'),
+('Rohit','MG Road','Mumbai');
+
+INSERT INTO Depositor VALUES                        -- Insert records into Depositor table
+('Amit',101),
+('Priya',102),
+('Rohit',103);
+
+INSERT INTO Loan VALUES                             -- Insert records into Loan table
+(201,'Wadia College',15000),
+(202,'FC Road',10000),
+(203,'Wadia College',20000);
+
+INSERT INTO Borrower VALUES                         -- Insert records into Borrower table
+('Amit',201),
+('Priya',202),
+('Rohit',203);
+
+
+SELECT DISTINCT branch_name                         -- Display distinct branch names from Loan table
+FROM Loan;
+
+
+SELECT loan_no                                      -- Display loan numbers
+FROM Loan
+WHERE branch_name='Wadia College'                   -- Condition for Wadia College branch
+AND amount > 12000;                                 -- Condition for amount greater than   12000
+
+SELECT Borrower.cust_name, Loan.loan_no, Loan.amount -- Display customer name, loan number and amount
+FROM Borrower
+JOIN Loan
+ON Borrower.loan_no = Loan.loan_no;
+
+
+SELECT Borrower.cust_name                           -- Display customers from Wadia College branch
+FROM Borrower
+JOIN Loan
+ON Borrower.loan_no = Loan.loan_no
+WHERE Loan.branch_name='Wadia College'
+ORDER BY Borrower.cust_name ASC;                    -- Arrange names in alphabetical order
+
+
+SELECT DISTINCT branch_city                         -- Display distinct branch cities
+FROM Branch;
+
+
+Theory:-
+
+Aim:
+To create banking database tables and perform SQL queries using joins and conditions.
+
+Objective:
+To understand primary key and foreign key constraints.
+To perform SQL queries using JOIN, DISTINCT, and ORDER BY.
+To retrieve information from related tables.
+
+Theory:
+SQL is used to create and manage relational databases.
+
+Important concepts used:
+
+PRIMARY KEY → uniquely identifies records
+FOREIGN KEY → creates relationship between tables
+JOIN → combines data from multiple tables
+DISTINCT → removes duplicate values
+ORDER BY → sorts records in ascending or descending order
+
+Conclusion:
+Thus, banking database tables were created successfully and all required SQL queries were executed correctly using joins and conditions.

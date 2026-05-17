@@ -1,0 +1,180 @@
+CREATE TABLE Borrower (
+
+    Rollin INT,                         -- roll number
+    Name VARCHAR(50),                  -- student name
+    DateofIssue DATE,                  -- book issue date
+    NameofBook VARCHAR(50),            -- book name
+    Status CHAR(1)                     -- I = Issued, R = Returned
+
+);
+
+CREATE TABLE Fine (
+
+    Roll_no INT,                       -- roll number
+    Date DATE,                         -- fine date
+    Amt DOUBLE                         -- fine amount
+
+);
+INSERT INTO Borrower
+VALUES
+(101, 'VRUSHALI', '2026-04-10', 'DBMS', 'I');
+DELIMITER $$
+
+CREATE PROCEDURE library_fine()
+
+BEGIN
+
+    DECLARE v_rollno INT;                   -- variable for roll number
+    DECLARE v_bookname VARCHAR(50);         -- variable for book name
+    DECLARE v_days INT;                     -- variable to store number of days
+    DECLARE v_fine DOUBLE DEFAULT 0;        -- variable to store fine amount
+    DECLARE v_issue_date DATE;              -- variable for issue date
+
+    SET v_rollno = 101;                     -- enter roll number
+    SET v_bookname = 'DBMS';                -- enter book name
+
+    SELECT DateofIssue
+    INTO v_issue_date
+    FROM Borrower
+    WHERE Rollin = v_rollno
+    AND NameofBook = v_bookname;
+
+    SET v_days = DATEDIFF(CURDATE(), v_issue_date);
+                                            -- calculate days from issue date
+
+    IF v_days BETWEEN 15 AND 30 THEN
+
+        SET v_fine = v_days * 5;            -- Rs 5 per day fine
+
+    ELSEIF v_days > 30 THEN
+
+        SET v_fine = (30 * 5) + ((v_days - 30) * 50);
+                                            -- first 30 days Rs 5/day
+                                            -- remaining days Rs 50/day
+
+    END IF;
+
+    UPDATE Borrower
+    SET Status = 'R'                        -- change status from I to R
+    WHERE Rollin = v_rollno
+    AND NameofBook = v_bookname;
+
+    IF v_fine > 0 THEN
+
+        INSERT INTO Fine(Roll_no, Date, Amt)
+        VALUES(v_rollno, CURDATE(), v_fine);
+                                            -- insert fine details into fine table
+
+    END IF;
+
+    SELECT v_fine AS Fine_Amount;           -- display fine amount
+
+END$$
+
+DELIMITER ;
+
+CALL library_fine();
+SELECT * FROM Borrower;
+SELECT * FROM Fine;
+
+Aim
+To write an unnamed PL/SQL block to calculate library fine based on delayed submission of books.
+
+Objective
+To understand PL/SQL conditional statements.
+To calculate fine based on number of delayed days.
+To update records using PL/SQL.
+To insert records into another table conditionally.
+Theory
+PL/SQL supports procedural programming features such as:
+
+Variables
+Conditional statements
+Loops
+Exception handling
+In this practical:
+
+Fine is calculated based on delayed days.
+Book status changes from 'I' (Issued) to 'R' (Returned).
+Fine details are inserted into Fine table if applicable.
+Fine Conditions
+If days are between 15 and 30 → Rs. 5 per day
+If days are greater than 30:
+First 30 days → Rs. 5 per day
+Remaining days → Rs. 50 per day
+
+Conclusion
+Thus, the PL/SQL program for library fine calculation based on delayed submission was executed successfully.
+
+PL/SQL code:- 
+CREATE TABLE Borrower(
+    Roll_no NUMBER PRIMARY KEY,
+    Name VARCHAR2(50),
+    DateofIssue DATE,
+    NameofBook VARCHAR2(50),
+    Status CHAR(1)
+);
+CREATE TABLE Fine(
+    Roll_no NUMBER,
+    Fine_Date DATE,
+    Amt NUMBER
+);
+INSERT INTO Borrower
+VALUES(1, 'VRUSHALI', SYSDATE-20, 'DBMS', 'I');
+
+INSERT INTO Borrower
+VALUES(2, 'SANKET', SYSDATE-40, 'Java', 'I');
+
+COMMIT;
+DECLARE
+
+    r_no NUMBER;
+    b_name VARCHAR2(50);
+
+    issue_date DATE;
+    days NUMBER;
+    fine_amt NUMBER := 0;
+
+BEGIN
+
+    r_no := &Roll_No;
+    b_name := '&Book_Name';
+
+    SELECT DateofIssue
+    INTO issue_date
+    FROM Borrower
+    WHERE Roll_no = r_no
+    AND NameofBook = b_name;
+
+    days := SYSDATE - issue_date;
+
+    IF days BETWEEN 15 AND 30 THEN
+
+        fine_amt := days * 5;
+
+    ELSIF days > 30 THEN
+
+        fine_amt := (30 * 5) + ((days - 30) * 50);
+
+    END IF;
+
+    UPDATE Borrower
+    SET Status = 'R'
+    WHERE Roll_no = r_no
+    AND NameofBook = b_name;
+
+    IF fine_amt > 0 THEN
+
+        INSERT INTO Fine
+        VALUES(r_no, SYSDATE, fine_amt);
+
+    END IF;
+
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Fine Amount = ' || fine_amt);
+
+END;
+/
+SELECT * FROM Borrower;
+SELECT * FROM Fine;

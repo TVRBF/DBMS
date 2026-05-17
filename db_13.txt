@@ -1,0 +1,148 @@
+CREATE TABLE N_RollCall (
+
+    ROLL_NO INT,
+    NAME VARCHAR(100)
+
+);
+CREATE TABLE O_RollCall (
+
+    ROLL_NO INT,
+    NAME VARCHAR(100)
+
+);
+INSERT INTO N_RollCall VALUES (1, 'SAM'),(2, 'RAM'),(3, 'SHAM');
+INSERT INTO O_RollCall VALUES (2, 'RAM'),(4, 'PARAS');
+
+DELIMITER $$
+
+CREATE PROCEDURE Merge_RollCall()
+
+BEGIN
+
+    DECLARE v_rollno INT;
+    DECLARE v_name VARCHAR(100);
+    DECLARE done INT DEFAULT 0;
+    DECLARE cnt INT;
+
+    DECLARE cur CURSOR FOR
+        SELECT ROLL_NO, NAME FROM N_RollCall;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND
+        SET done = 1;
+
+    OPEN cur;
+
+    read_loop: LOOP
+
+        FETCH cur INTO v_rollno, v_name;
+
+        IF done = 1 THEN
+            LEAVE read_loop;
+        END IF;
+
+        SELECT COUNT(*)
+        INTO cnt
+        FROM O_RollCall
+        WHERE ROLL_NO = v_rollno;
+
+        IF cnt = 0 THEN
+
+            INSERT INTO O_RollCall
+            VALUES(v_rollno, v_name);
+
+        END IF;
+
+    END LOOP;
+
+    CLOSE cur;
+
+END$$
+
+DELIMITER ;
+CALL Merge_RollCall();
+SELECT * FROM O_RollCall;
+
+Aim
+To write a PL/SQL block using Cursor to merge data from N_RollCall table into O_RollCall table while avoiding duplicate records.
+
+Objective
+To understand Cursor in PL/SQL.
+To perform record-by-record processing.
+To merge records between tables.
+To avoid duplicate entries using conditional checking.
+Theory
+A Cursor is a pointer used in PL/SQL to process records one by one.
+
+Types of Cursors
+Implicit Cursor
+Explicit Cursor
+In this practical:
+
+Records from N_RollCall are fetched using Cursor.
+If a record already exists in O_RollCall, it is skipped.
+Otherwise, it is inserted into O_RollCall.
+Conclusion
+Thus, the PL/SQL Cursor program was executed successfully to merge records from N_RollCall table into O_RollCall table without inserting duplicate records.
+
+PL/SQL code:- 
+CREATE TABLE O_RollCall(
+    Roll_No NUMBER PRIMARY KEY,
+    Name VARCHAR2(50)
+);
+CREATE TABLE N_RollCall(
+    Roll_No NUMBER PRIMARY KEY,
+    Name VARCHAR2(50)
+);
+INSERT INTO O_RollCall VALUES(1, 'Amit');
+INSERT INTO O_RollCall VALUES(2, 'Rahul');
+
+COMMIT;
+INSERT INTO N_RollCall VALUES(2, 'Rahul');
+INSERT INTO N_RollCall VALUES(3, 'Sneha');
+INSERT INTO N_RollCall VALUES(4, 'Pooja');
+
+COMMIT;
+DECLARE
+
+    CURSOR c1 IS
+    SELECT Roll_No, Name
+    FROM N_RollCall;
+
+    v_roll NUMBER;
+    v_name VARCHAR2(50);
+
+    cnt NUMBER;
+
+BEGIN
+
+    OPEN c1;
+
+    LOOP
+
+        FETCH c1 INTO v_roll, v_name;
+
+        EXIT WHEN c1%NOTFOUND;
+
+        SELECT COUNT(*)
+        INTO cnt
+        FROM O_RollCall
+        WHERE Roll_No = v_roll;
+
+        IF cnt = 0 THEN
+
+            INSERT INTO O_RollCall
+            VALUES(v_roll, v_name);
+
+        END IF;
+
+    END LOOP;
+
+    CLOSE c1;
+
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Data Merged Successfully');
+
+END;
+/
+SELECT * FROM O_RollCall;

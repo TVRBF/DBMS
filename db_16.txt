@@ -1,0 +1,168 @@
+CREATE TABLE Library (
+    Book_id INT,
+    Book_Name VARCHAR(50),
+    Price DOUBLE
+);
+CREATE TABLE Library_Audit (
+    Book_id INT,
+    Book_Name VARCHAR(50),
+    Price DOUBLE,
+    Action_Type VARCHAR(20)
+);
+INSERT INTO Library
+VALUES
+(1, 'DBMS', 500),
+(2, 'JAVA', 600);
+--BEFORE UPDATE Trigger
+DELIMITER $$
+
+CREATE TRIGGER library_before_update
+
+BEFORE UPDATE
+ON Library
+
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO Library_Audit
+    VALUES
+    (
+        OLD.Book_id,
+        OLD.Book_Name,
+        OLD.Price,
+        'BEFORE UPDATE'
+    );
+
+END$$
+
+DELIMITER ;
+--AFTER DELETE Trigger
+DELIMITER $$
+
+CREATE TRIGGER library_after_delete
+
+AFTER DELETE
+ON Library
+
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO Library_Audit
+    VALUES
+    (
+        OLD.Book_id,
+        OLD.Book_Name,
+        OLD.Price,
+        'AFTER DELETE'
+    );
+
+END$$
+
+DELIMITER ;
+--Update Record
+UPDATE Library
+SET Price = 700
+WHERE Book_id = 1;
+--Delete Record
+DELETE FROM Library
+WHERE Book_id = 2;
+--Check Audit Table
+SELECT * FROM Library_Audit;
+
+Aim
+To create Row Level BEFORE and AFTER Triggers on Library table to maintain audit records for updated or deleted data.
+
+Objective
+To understand database triggers.
+To create BEFORE and AFTER row-level triggers.
+To maintain audit information in another table.
+To track updated and deleted records automatically.
+Theory
+A Trigger is a stored PL/SQL block that executes automatically when a specified event occurs on a table.
+
+Types of Triggers
+BEFORE Trigger
+AFTER Trigger
+Row Level Trigger
+Statement Level Trigger
+In this practical:
+
+Old values of updated or deleted records are stored in Library_Audit table.
+Trigger automatically executes during UPDATE or DELETE operation.
+
+Conclusion
+Thus, BEFORE and AFTER row-level triggers were successfully created to maintain audit records for updated and deleted rows in Library table.
+
+PL/SQL CODE:-
+CREATE TABLE Library(
+    Book_id NUMBER PRIMARY KEY,
+    Book_Name VARCHAR2(50),
+    Author VARCHAR2(50),
+    Price NUMBER
+);
+CREATE TABLE Library_Audit(
+    Book_id NUMBER,
+    Book_Name VARCHAR2(50),
+    Author VARCHAR2(50),
+    Price NUMBER,
+    Operation VARCHAR2(20),
+    Operation_Date DATE
+);
+INSERT INTO Library
+VALUES(1, 'DBMS', 'Korth', 500);
+
+INSERT INTO Library
+VALUES(2, 'Java', 'James Gosling', 700);
+
+COMMIT;
+CREATE OR REPLACE TRIGGER trg_before_update
+BEFORE UPDATE
+ON Library
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO Library_Audit
+    VALUES(
+        :OLD.Book_id,
+        :OLD.Book_Name,
+        :OLD.Author,
+        :OLD.Price,
+        'UPDATE',
+        SYSDATE
+    );
+
+END;
+/
+CREATE OR REPLACE TRIGGER trg_after_delete
+AFTER DELETE
+ON Library
+FOR EACH ROW
+
+BEGIN
+
+    INSERT INTO Library_Audit
+    VALUES(
+        :OLD.Book_id,
+        :OLD.Book_Name,
+        :OLD.Author,
+        :OLD.Price,
+        'DELETE',
+        SYSDATE
+    );
+
+END;
+/
+UPDATE Library
+SET Price = 800
+WHERE Book_id = 1;
+
+COMMIT;
+DELETE FROM Library
+WHERE Book_id = 2;
+
+COMMIT;
+SELECT * FROM Library;
+SELECT * FROM Library_Audit;

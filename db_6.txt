@@ -1,0 +1,177 @@
+CREATE TABLE Companies(                             -- Create Companies table
+comp_id INT PRIMARY KEY,                            -- Company ID as primary key
+name VARCHAR(50),                                   -- Store company name
+cost DECIMAL(10,2),                                 -- Store company cost
+year INT                                            -- Store company year
+);
+
+CREATE TABLE Orders(                                -- Create Orders table
+comp_id INT,                                        -- Store company ID
+domain VARCHAR(50),                                 -- Store company domain
+quantity INT,                                       -- Store quantity
+FOREIGN KEY(comp_id) REFERENCES Companies(comp_id)  -- Foreign key reference
+);
+
+
+INSERT INTO Companies VALUES                        -- Insert records into Companies table
+(1,'TCS',50000,2022),
+(2,'InfoSys',70000,2023),
+(3,'TechM',60000,2024);
+
+INSERT INTO Orders VALUES                           -- Insert records into Orders table
+(1,'Software',10),
+(2,'Networking',5),
+(3,'Cloud',8);
+
+
+SELECT Companies.name, Companies.cost, Orders.domain, Orders.quantity -- Inner join query
+FROM Companies
+INNER JOIN Orders
+ON Companies.comp_id = Orders.comp_id;
+
+
+SELECT Companies.name, Companies.cost, Orders.domain, Orders.quantity -- Left outer join query
+FROM Companies
+LEFT OUTER JOIN Orders
+ON Companies.comp_id = Orders.comp_id;
+
+
+SELECT Companies.name, Companies.cost, Orders.domain, Orders.quantity -- Right outer join query
+FROM Companies
+RIGHT OUTER JOIN Orders
+ON Companies.comp_id = Orders.comp_id;
+
+
+SELECT name, cost                                  -- Select data from Companies table
+FROM Companies
+UNION
+SELECT domain, quantity                            -- Select data from Orders table
+FROM Orders;
+
+
+CREATE VIEW View1 AS                               -- Create View1
+SELECT Companies.name, Orders.quantity
+FROM Companies
+JOIN Orders
+ON Companies.comp_id = Orders.comp_id;
+
+
+CREATE VIEW View2 AS                               -- Create View2
+SELECT comp_id, name
+FROM Companies;
+
+
+INSERT INTO View2 VALUES                           -- Insert record into View2
+(4,'Wipro');
+
+
+UPDATE View2                                       -- Update View2 record
+SET name='HCL'
+WHERE comp_id=4;
+
+
+DELETE FROM View2                                  -- Delete record from View2
+WHERE comp_id=4;
+
+
+SELECT * FROM View1;                               -- Display contents of View1
+
+SELECT * FROM View2;                               -- Display contents of View2
+
+
+Q6 — SQL Queries with Comments
+CREATE TABLE Companies(                             -- Create Companies table
+comp_id INT PRIMARY KEY,                            -- Company ID as primary key
+name VARCHAR(50),                                   -- Store company name
+cost DECIMAL(10,2),                                 -- Store company cost
+year INT                                            -- Store company year
+);
+
+CREATE TABLE Orders(                                -- Create Orders table
+comp_id INT,                                        -- Store company ID
+domain VARCHAR(50),                                 -- Store company domain
+quantity INT,                                       -- Store quantity
+FOREIGN KEY(comp_id) REFERENCES Companies(comp_id)  -- Foreign key reference
+);
+
+INSERT INTO Companies VALUES                        -- Insert records into Companies table
+(1,'TCS',50000,2022),
+(2,'InfoSys',70000,2023),
+(3,'TechM',60000,2024);
+
+INSERT INTO Orders VALUES                           -- Insert records into Orders table
+(1,'Software',10),
+(2,'Networking',5),
+(3,'Cloud',8);
+
+SELECT Companies.name, Companies.cost, Orders.domain, Orders.quantity -- Inner join query
+FROM Companies
+INNER JOIN Orders
+ON Companies.comp_id = Orders.comp_id;
+
+SELECT Companies.name, Companies.cost, Orders.domain, Orders.quantity -- Left outer join query
+FROM Companies
+LEFT OUTER JOIN Orders
+ON Companies.comp_id = Orders.comp_id;
+
+SELECT Companies.name, Companies.cost, Orders.domain, Orders.quantity -- Right outer join query
+FROM Companies
+RIGHT OUTER JOIN Orders
+ON Companies.comp_id = Orders.comp_id;
+
+SELECT name, cost                                  -- Select data from Companies table
+FROM Companies
+UNION
+SELECT domain, quantity                            -- Select data from Orders table
+FROM Orders;
+
+CREATE VIEW View1 AS                               -- Create View1
+SELECT Companies.name, Orders.quantity
+FROM Companies
+JOIN Orders
+ON Companies.comp_id = Orders.comp_id;
+
+CREATE VIEW View2 AS                               -- Create View2
+SELECT comp_id, name
+FROM Companies;
+
+INSERT INTO View2 VALUES                           -- Insert record into View2
+(4,'Wipro');
+
+UPDATE View2                                       -- Update View2 record
+SET name='HCL'
+WHERE comp_id=4;
+
+DELETE FROM View2                                  -- Delete record from View2
+WHERE comp_id=4;
+
+SELECT * FROM View1;                               -- Display contents of View1
+
+SELECT * FROM View2;                               -- Display contents of View2
+
+Theory:
+Aim:
+To perform SQL join operations and create views using Companies and Orders tables.
+
+Objective:
+To understand different join operations.
+To create and use SQL views.
+To perform insert, update, and delete operations on views.
+
+Theory:
+SQL joins are used to combine data from multiple tables.
+
+Important concepts used:
+
+INNER JOIN → displays matching records from both tables
+LEFT OUTER JOIN → displays all records from left table
+RIGHT OUTER JOIN → displays all records from right table
+UNION → combines results of two queries
+VIEW → virtual table created from query
+INSERT, UPDATE, DELETE → used for data manipulation
+
+Conclusion:
+Thus, Companies and Orders tables were created successfully and different join operations and view operations were performed correctly.
+
+
+

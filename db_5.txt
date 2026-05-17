@@ -1,0 +1,107 @@
+CREATE TABLE Employee(                              -- Create Employee table
+emp_id INT PRIMARY KEY,                             -- Employee ID as primary key
+employee_name VARCHAR(50),                          -- Store employee name
+street VARCHAR(50),                                 -- Store street name
+city VARCHAR(50)                                    -- Store city name
+);
+
+CREATE TABLE Company(                               -- Create Company table
+company_name VARCHAR(50) PRIMARY KEY,               -- Company name as primary key
+city VARCHAR(50)                                    -- Store company city
+);
+
+CREATE TABLE Works(                                 -- Create Works table
+employee_name VARCHAR(50),                          -- Store employee name
+company_name VARCHAR(50),                           -- Store company name
+salary DECIMAL(10,2),                               -- Store employee salary
+FOREIGN KEY(company_name) REFERENCES Company(company_name) -- Foreign key reference
+);
+
+CREATE TABLE Manages(                               -- Create Manages table
+employee_name VARCHAR(50),                          -- Store employee name
+manager_name VARCHAR(50)                            -- Store manager name
+);
+
+
+
+INSERT INTO Employee VALUES                         -- Insert records into Employee table
+(1,'Amit','JM Road','Pune'),
+(2,'Rohit','Camp','Mumbai'),
+(3,'Pooja','FC Road','Pune'),
+(4,'Sneha','MG Road','Banglore');
+
+INSERT INTO Company VALUES                          -- Insert records into Company table
+('TCS','Pune'),
+('InfoSys','Mumbai'),
+('TechM','Banglore');
+
+INSERT INTO Works VALUES                            -- Insert records into Works table
+('Amit','TCS',15000),
+('Rohit','InfoSys',12000),
+('Pooja','TechM',20000),
+('Sneha','TCS',18000);
+
+INSERT INTO Manages VALUES                          -- Insert records into Manages table
+('Amit','Raj'),
+('Rohit','Kiran'),
+('Pooja','Meena'),
+('Sneha','Ajay');
+
+
+
+SELECT employee_name                                -- Find employees working for TCS
+FROM Works
+WHERE company_name='TCS';
+
+
+SELECT employee_name, company_name                  -- Display employee and company names
+FROM Works
+ORDER BY company_name ASC, employee_name DESC;
+
+
+UPDATE Employee                                     -- Update Employee table
+SET city='Bangalore'                                -- Change city to Bangalore
+WHERE employee_name IN
+(
+SELECT employee_name                                -- Select employees working in InfoSys
+FROM Works
+WHERE company_name='InfoSys'
+);
+
+
+SELECT Employee.employee_name, Employee.street, Employee.city -- Display employee details
+FROM Employee
+JOIN Works
+ON Employee.employee_name = Works.employee_name
+WHERE Works.company_name='TechM'
+AND Works.salary > 10000;
+
+
+ALTER TABLE Company                                 -- Modify Company table
+ADD Asset DECIMAL(10,2);                            -- Add Asset column
+
+
+Theory:-
+
+Aim:
+To create employee and company database tables and perform SQL queries using joins, update, and alter operations.
+
+Objective
+To understand table creation with constraints.
+To perform SQL queries using ORDER BY and JOIN.
+To use UPDATE and ALTER TABLE commands.
+Theory
+
+SQL is used for storing and manipulating relational database data.
+
+
+Important concepts used:
+
+ORDER BY → sorts records
+UPDATE → modifies existing records
+ALTER TABLE → changes table structure
+JOIN → combines records from multiple tables
+FOREIGN KEY → creates relationship between tables
+
+Conclusion:
+Thus, employee and company tables were created successfully and SQL queries using joins, update, sorting, and alter operations were executed correctly.

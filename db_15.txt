@@ -1,0 +1,142 @@
+CREATE TABLE emp (
+    emp_no INT,
+    salary DOUBLE
+);
+CREATE TABLE increment_salary (
+    emp_no INT,
+    salary DOUBLE
+);
+INSERT INTO emp VALUES (1, 20000),(2, 30000),(3, 15000),(4, 40000);
+DELIMITER $$
+
+CREATE PROCEDURE increase_salary()
+
+BEGIN
+
+    DECLARE done INT DEFAULT 0;
+    DECLARE v_empno INT;
+    DECLARE v_salary DOUBLE;
+    DECLARE avg_salary DOUBLE;
+
+    DECLARE cur CURSOR FOR
+        SELECT emp_no, salary
+        FROM emp;
+
+    DECLARE CONTINUE HANDLER FOR NOT FOUND
+        SET done = 1;
+
+    SELECT AVG(salary)
+    INTO avg_salary
+    FROM emp;
+                                        -- calculate average salary
+
+    OPEN cur;
+
+    read_loop: LOOP
+
+        FETCH cur INTO v_empno, v_salary;
+
+        IF done = 1 THEN
+            LEAVE read_loop;
+        END IF;
+
+        IF v_salary < avg_salary THEN
+
+            SET v_salary = v_salary + (v_salary * 0.10);
+                                        -- increase salary by 10%
+
+            UPDATE emp
+            SET salary = v_salary
+            WHERE emp_no = v_empno;
+
+            INSERT INTO increment_salary
+            VALUES(v_empno, v_salary);
+                                        -- store updated salary
+
+        END IF;
+
+    END LOOP;
+
+    CLOSE cur;
+
+END$$
+
+DELIMITER ;
+CALL increase_salary();
+SELECT * FROM emp;
+SELECT * FROM increment_salary;
+
+Aim
+To write a PL/SQL block to increase salary of employees whose salary is less than the average salary of the organization and maintain updated records in increment_salary table.
+
+Objective
+To understand PL/SQL programming concepts.
+To use aggregate functions in PL/SQL.
+To update records conditionally.
+To store updated records in another table.
+Theory
+PL/SQL combines SQL with procedural programming features.
+
+In this practical:
+
+Average salary of organization is calculated.
+Employees having salary less than average salary are updated by 10%.
+Updated employee details are stored in increment_salary table.
+
+Conclusion
+Thus, the PL/SQL program was successfully executed to increase salary of employees earning below average salary and store updated records in increment_salary table.
+
+PL/SQL code:- 
+CREATE TABLE emp(
+    emp_no NUMBER PRIMARY KEY,
+    salary NUMBER
+);
+CREATE TABLE increment_salary(
+    emp_no NUMBER,
+    salary NUMBER
+);
+INSERT INTO emp VALUES(1, 20000);
+INSERT INTO emp VALUES(2, 40000);
+INSERT INTO emp VALUES(3, 15000);
+INSERT INTO emp VALUES(4, 50000);
+
+COMMIT;
+DECLARE
+
+    avg_salary NUMBER;
+
+BEGIN
+
+    SELECT AVG(salary)
+    INTO avg_salary
+    FROM emp;
+
+    FOR rec IN
+    (
+        SELECT emp_no, salary
+        FROM emp
+        WHERE salary < avg_salary
+    )
+
+    LOOP
+
+        UPDATE emp
+        SET salary = salary + (salary * 0.10)
+        WHERE emp_no = rec.emp_no;
+
+        INSERT INTO increment_salary
+        VALUES(
+            rec.emp_no,
+            rec.salary + (rec.salary * 0.10)
+        );
+
+    END LOOP;
+
+    COMMIT;
+
+    DBMS_OUTPUT.PUT_LINE('Salary Updated Successfully');
+
+END;
+/
+SELECT * FROM emp;
+SELECT * FROM increment_salary;

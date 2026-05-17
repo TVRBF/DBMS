@@ -1,0 +1,85 @@
+CREATE TABLE areas (
+    radius INT,          -- stores radius values
+    area DOUBLE          -- stores calculated area values
+);
+
+DELIMITER $$            -- change delimiter from ; to $$
+
+CREATE PROCEDURE calculate_areas()
+
+BEGIN
+
+    DECLARE r INT DEFAULT 5;   -- declare radius variable starting from 5
+    DECLARE a DOUBLE;          -- declare variable to store area
+
+    WHILE r <= 9 DO            -- loop runs from radius 5 to 9
+
+        SET a = 3.14159 * r * r;   -- calculate area using πr²
+
+        INSERT INTO areas(radius, area)
+        VALUES (r, a);             -- insert radius and area into table
+
+        SET r = r + 1;             -- increase radius by 1
+
+    END WHILE;                     -- end of while loop
+
+END$$                             -- end procedure
+
+DELIMITER ;                       -- restore default delimiter
+
+CALL calculate_areas();           -- execute procedure
+
+SELECT * FROM areas;              -- display all records
+
+
+Aim
+To write a PL/SQL code block to calculate the area of a circle for radius values varying from 5 to 9 and store the results in a table.
+
+Objective
+To understand PL/SQL block structure.
+To use loops in PL/SQL.
+To perform mathematical calculations in PL/SQL.
+To insert calculated values into a table.
+Theory
+PL/SQL is Oracle’s procedural extension of SQL.
+
+A PL/SQL block consists of:
+
+Declaration Section
+Execution Section
+Exception Handling Section
+Loops are used for repetitive execution of statements.
+
+The formula for area of circle is:
+
+Area = π × r × r
+In this practical, radius values from 5 to 9 are processed using a loop and corresponding areas are stored in a table.
+Conclusion
+Thus, the PL/SQL program to calculate the area of circles for radius values from 5 to 9 was executed successfully and the results were stored in the Areas table.
+
+PL/SQL CODE :- 
+
+CREATE TABLE Areas(
+    Radius NUMBER,
+    Area NUMBER(10,2)
+);
+DECLARE
+    r NUMBER;
+    a NUMBER(10,2);
+
+BEGIN
+
+    FOR r IN 5..9 LOOP
+
+        a := 3.14 * r * r;
+
+        INSERT INTO Areas
+        VALUES(r, a);
+
+    END LOOP;
+
+    COMMIT;
+
+END;
+/
+SELECT * FROM Areas;
